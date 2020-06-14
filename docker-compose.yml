@@ -3,26 +3,30 @@ services:
   nginx:
     build: nginx
     ports:
-      - "8080:80"
+      - "${APP_PORT}:80"
     volumes:
       - ./application:/var/www/html
     networks:
       - stydenet
+    environment:
+      APP_ENV: ${APP_ENV}
   php:
     build: php
     volumes:
       - ./application:/var/www/html
     networks:
       - stydenet
+    environment:
+      APP_ENV: ${APP_ENV}
   mysql:
     image: mysql:5.7
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: styde
-      MYSQL_USER: styde
-      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
-      - '33060:3306'
+      - '${DB_PORT}:3306'
     volumes:
       - mysqldata:/var/lib/mysql
     networks:
