@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+export APP_PORT=${APP_PORT:-8080}
+export APP_ENV=${APP_ENV:-local}
+export DB_PORT=${DB_PORT:-33060}
+export DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-root}
+export DB_NAME=${DB_NAME:-styde}
+export DB_USER=${DB_USER:-styde}
+export DB-PASSWORD=${DB_PASSWORD=-secret}
+
+COMPOSE="docker-compose"
+
+if [ $# -gt 0 ]; then
+  # si el argumento es "art" utilizar
+  # comandos de Artisan en un nuevo contenedor
+  if [ "$1" == "art" ]; then
+    shift 1
+    $COMPOSE run --rm \
+      -w /var/www/html \
+      php \
+      php artisan "$@"
+  # ejecutar tareas de composer
+  elif [ "$1" == "composer" ]; then
+    shift 1
+    $COMPOSE run --rm \
+      -w /var/www/html \
+      php \
+      composer artisan "$@"
+  # ejecutar pruebas de php unit
+  elif [ "$1" == "test" ];
+    shift 1
+    $COMPOSE run --rm \
+      -w /var/www/html \
+      php \
+      ./vendor/bin/phpunit "$@"
+  else
+    $COMPOSE "$@"
+  fi
+else
+  docker-compose ps
+fi
